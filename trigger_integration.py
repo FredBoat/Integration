@@ -15,8 +15,6 @@ payload = '''
 
 confName = os.environ["teamcity.buildConfName"]
 
-displayName = ""
-
 if confName == "FredBoat_Build":
     displayName = "FredBoat"
 elif confName == "Lavalink_Build":
@@ -29,8 +27,6 @@ else:
 payload = payload.format(displayName,
                          displayName.lower() + "Branch",
                          os.environ["teamcity.build.branch"])
-
-print(payload)
 
 headers = {
     'content-type': "application/xml",
