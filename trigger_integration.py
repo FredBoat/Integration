@@ -23,6 +23,7 @@
 #
 
 import os
+import sys
 import requests
 
 url = "https://ci.fredboat.com/app/rest/buildQueue"
@@ -37,28 +38,22 @@ payload = '''
 </build>
 '''
 
-confName = os.environ["TEAMCITY_BUILDCONF_NAME"]
+projName = os.environ["TEAMCITY_PROJECT_NAME"]
 
-if confName == "FredBoat_Build":
-    displayName = "FredBoat"
-elif confName == "Lavalink_Build":
-    displayName = "Lavalink"
-elif confName == "Private_Dike_Build":
-    displayName = "Dike"
-else:
-    raise RuntimeError("Unexpected build config: " + confName)
-
-payload = payload.format(displayName,
-                         displayName.lower() + "Branch",
+payload = payload.format(projName,
+                         projName.upper() + "_BRANCH",
                          os.environ["BRANCH"])
 
 headers = {
     'content-type': "application/xml",
 }
 
-username = os.environ["tempUser"]
-password = os.environ["tempPass"]
+username = os.environ["INTEGRATION_USER"]
+password = os.environ["INTEGRATION_PASSWORD"]
 
 response = requests.request("POST", url, data=payload, headers=headers, auth=(username, password))
 
 print(response.text)
+
+if response.status_code < 200 | response.status_code > 299:
+    sys.exit(-1)
