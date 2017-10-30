@@ -25,10 +25,23 @@
 import os
 import subprocess
 
+
+def cloneGit(url: str, branchId: str) -> None:
+    branchId = branchId[5:]  # Remove "refs/"
+
+    if branchId.startswith("pull/"):
+        # This is a pull request
+        subprocess.check_call(["git", "clone", url, "--single-branch"])
+        subprocess.check_call(["git", "fetch", "origin", branchId + ":pr"])
+        subprocess.check_call(["git", "checkout", "pr"])
+    else:
+        # This is a normal branch
+        subprocess.check_call(["git", "clone", url,
+                               "-b", branchId.replace("heads/", ""), "--single-branch"])
+
+
 fredboatBranch = os.getenv("FREDBOAT_BRANCH", "refs/heads/development")
 lavalinkBranch = os.getenv("LAVALINK_BRANCH", "refs/heads/dev")
 
-subprocess.check_call(["git", "clone", "https://github.com/Frederikam/FredBoat",
-                       "-b", fredboatBranch, "--single-branch"])
-subprocess.check_call(["git", "clone", "https://github.com/Frederikam/Lavalink",
-                       "-b", lavalinkBranch, "--single-branch"])
+cloneGit("https://github.com/Frederikam/FredBoat", fredboatBranch)
+cloneGit("https://github.com/Frederikam/Lavalink", lavalinkBranch)
