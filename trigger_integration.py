@@ -37,7 +37,7 @@ payload = '''
 </build>
 '''
 
-confName = os.environ["teamcity.buildConfName"]
+confName = os.environ["TEAMCITY_BUILDCONF_NAME"]
 
 if confName == "FredBoat_Build":
     displayName = "FredBoat"
@@ -50,7 +50,7 @@ else:
 
 payload = payload.format(displayName,
                          displayName.lower() + "Branch",
-                         os.environ["teamcity.build.branch"])
+                         os.environ["BRANCH"])
 
 headers = {
     'content-type': "application/xml",
