@@ -26,18 +26,18 @@ import os
 import subprocess
 
 
-def cloneGit(url: str, branchId: str) -> None:
-    branchId = branchId[5:]  # Remove "refs/"
+def cloneGit(url: str, branch_id: str):
+    branch_id = branch_id[5:]  # Remove "refs/"
 
-    if branchId.startswith("pull/"):
+    if branch_id.startswith("pull/"):
         # This is a pull request
         subprocess.check_call(["git", "clone", url, "--single-branch"])
-        subprocess.check_call(["git", "fetch", "origin", branchId + ":pr"])
+        subprocess.check_call(["git", "fetch", "origin", branch_id + ":pr"])
         subprocess.check_call(["git", "checkout", "pr"])
     else:
         # This is a normal branch
         subprocess.check_call(["git", "clone", url,
-                               "-b", branchId.replace("heads/", ""), "--single-branch"])
+                               "-b", branch_id.replace("heads/", ""), "--single-branch"])
 
 
 fredboatBranch = os.getenv("FREDBOAT_BRANCH", "refs/heads/development")
